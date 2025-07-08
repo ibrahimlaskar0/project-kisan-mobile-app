@@ -39,5 +39,36 @@ def upload_image():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+
+
+chat_session = genai_client.chats.create(
+    model=MODEL,
+    config=types.GenerateContentConfig(
+        thinking_config=types.ThinkingConfig(thinking_budget=0),
+        system_instruction="You are an agriculture assistant that answers farmer questions related to crops, diseases, pesticides, farming methods, and weather. If the user asks anything unrelated (like movies or politics), politely say you are not trained for that. Answer in simple language. Avoid technical jargon unless necessary. Keep answers short and practical. Return the result as plain text without formatting like **bold**, *, #"
+    ),
+    history=[]
+)
+chat_history = []
+
+@app.route('/chat', methods=['POST'])
+def chat():
+    data = request.get_json()
+    message = data.get("message")
+
+    if not message:
+        return jsonify({ "message": "error" }), 400
+        
+    response = chat_session.send_message(message=message)
+
+    chat_history.append({"user": message})
+    chat_history.append({"assistant": response})
+
+    chat_session.record_history(message, [response], chat_history, True)
+
+    return jsonify({"response": response.text}), 200
+
+
+
 if __name__ == "__main__":
-    app.run(debug=True) 
+    app.run(debug=True, host="0.0.0.0", port=5000) 
