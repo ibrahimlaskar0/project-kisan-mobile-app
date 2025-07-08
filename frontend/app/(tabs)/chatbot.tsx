@@ -1,5 +1,5 @@
 import { useRouter } from "expo-router";
-import { speak } from "expo-speech";
+import Speech from "expo-speech";
 import { ArrowLeft, ArrowUp, Mic } from "lucide-react-native";
 import { useRef, useState } from "react";
 import { KeyboardAvoidingView, Platform, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
@@ -22,15 +22,18 @@ export default function ChatbotScreen() {
     const userMsg: Message = { from: "user", text: input };
     setMessages((prev) => [...prev, userMsg]);
     setInput("");
-
+    
     if (!CHAT_URL) {
       const error_message = { from: "assistant", text: "Unable to connnect, please try again later." }
       setMessages((prev) => [...prev, error_message]);
       return
     }
-
+    
     try {
+      setMessages((prev) => [...prev, { from: "loader", text: "typing..."}]);
+      
       (async () => {
+        await Speech.stop()
         const res = await fetch(CHAT_URL + "/chat", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -40,9 +43,9 @@ export default function ChatbotScreen() {
         })
         const data: any = await res.json()
 
-        speak(data.response)
+        Speech.speak(data.response)
 
-        setMessages((prev) => [...prev, { from: "assistant", text: data.response }]);
+        setMessages((prev) => [...(prev.slice(0, prev.length - 1)), { from: "assistant", text: data.response }]);
         scrollViewRef.current?.scrollToEnd({ animated: true });
       })()
 
@@ -53,10 +56,16 @@ export default function ChatbotScreen() {
 
   }
 
+  // TODO: fix the ongoing speech issue
+  const handleBack = () => {
+    router.back()
+  }
+
+  // TODO: fix styling issue
   return (
     <SafeAreaView className="flex-1 bg-white" edges={['top', 'bottom']}>
       <View className="w-full py-4 px-6 bg-white border-b border-gray-200 flex-row items-center" style={{ position: 'absolute', top: 30, left: 0, right: 0, zIndex: 10 }}>
-        <TouchableOpacity onPress={() => router.back()} style={{ marginRight: 12, padding: 4 }}>
+        <TouchableOpacity onPress={handleBack} className="mr-3 p-1">
           <ArrowLeft size={28} color="#222" />
         </TouchableOpacity>
         <Text className="text-2xl font-bold text-gray-900 text-left">Chatbot</Text>
