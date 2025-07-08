@@ -1,4 +1,5 @@
 import { useRouter } from "expo-router";
+import { speak } from "expo-speech";
 import { ArrowLeft, ArrowUp, Mic } from "lucide-react-native";
 import { useRef, useState } from "react";
 import { KeyboardAvoidingView, Platform, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
@@ -22,28 +23,35 @@ export default function ChatbotScreen() {
     setMessages((prev) => [...prev, userMsg]);
     setInput("");
 
-    if(!CHAT_URL){
-      const error_message = { from: "assistant", text: "Unable to connnect, please try again later."}
+    if (!CHAT_URL) {
+      const error_message = { from: "assistant", text: "Unable to connnect, please try again later." }
       setMessages((prev) => [...prev, error_message]);
       return
     }
 
-    (async () => {
-      const res = await fetch(CHAT_URL + "/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          message: userMsg.text
-        }),
-      })
-      const data: any = await res.json()
+    try {
+      (async () => {
+        const res = await fetch(CHAT_URL + "/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            message: userMsg.text
+          }),
+        })
+        const data: any = await res.json()
 
-      setMessages((prev) => [...prev, { from: "assistant", text: data.response }]);
+        speak(data.response)
+
+        setMessages((prev) => [...prev, { from: "assistant", text: data.response }]);
+        scrollViewRef.current?.scrollToEnd({ animated: true });
+      })()
+
       scrollViewRef.current?.scrollToEnd({ animated: true });
-    })()
+    } catch (e) {
+      setMessages((prev) => [...prev, { from: "assistant", text: "Somethign went wrong." }])
+    }
 
-    scrollViewRef.current?.scrollToEnd({ animated: true });
-  };
+  }
 
   return (
     <SafeAreaView className="flex-1 bg-white" edges={['top', 'bottom']}>
@@ -90,18 +98,8 @@ export default function ChatbotScreen() {
           </ScrollView>
         </View>
 
-        <View
-          style={{
-            paddingHorizontal: 12,
-            paddingVertical: 8,
-            borderTopWidth: 1,
-            borderColor: "#e5e7eb",
-            backgroundColor: "#fff",
-            flexDirection: "row",
-            alignItems: "center",
-          }}
-        >
-          <TouchableOpacity style={{ marginRight: 8, padding: 8 }}>
+        <View className="px-3 py-2 border-t-2 border-slate-100 bg-white flex-row items-center">
+          <TouchableOpacity className="mr-2 p-2">
             <Mic size={24} color="#888" />
           </TouchableOpacity>
           <TextInput
@@ -114,10 +112,7 @@ export default function ChatbotScreen() {
             returnKeyType="send"
             onSubmitEditing={handleSend}
           />
-          <TouchableOpacity
-            style={{ marginLeft: 8, padding: 8, backgroundColor: "#7EAD0E", borderRadius: 999 }}
-            onPress={handleSend}
-          >
+          <TouchableOpacity className="ml-2 p-2 bg-[#7EAD0E] rounded-full" onPress={handleSend}>
             <ArrowUp size={24} color="#fff" />
           </TouchableOpacity>
         </View>
