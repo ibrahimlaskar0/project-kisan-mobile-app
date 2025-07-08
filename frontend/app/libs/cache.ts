@@ -8,6 +8,10 @@ export const cacheWithExpiry = async (key: string, data: any, ttlseconds: number
   await AsyncStorage.setItem(key, JSON.stringify(item));
 };
 
+export const cacheData = async (key: string, data: any) => {
+    await AsyncStorage.setItem(key, data)
+}
+
 export const getCache = async (key: string) => {
   const json = await AsyncStorage.getItem(key);
   if (!json) return null;
