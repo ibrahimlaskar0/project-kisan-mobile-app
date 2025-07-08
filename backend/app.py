@@ -8,5 +8,10 @@ app = Flask(__name__)
 def index():
     return "Hello world"
 
+# future route I will implement
+@app.route("/upload", method=["POST"])
+def upload():
+    pass
+
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True) 
