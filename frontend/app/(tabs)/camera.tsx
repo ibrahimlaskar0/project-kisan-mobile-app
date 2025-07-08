@@ -17,6 +17,11 @@ export default function CameraScreen() {
   const [cameraKey, setCameraKey] = useState(0);
   const IMG_UPLOAD_URL: string = process.env.EXPO_PUBLIC_BACKEND_URL || "";
 
+  useFocusEffect(
+    useCallback(() => {
+      setCameraKey(prev => prev + 1);
+    }, [])
+  );
 
   useEffect(() => {
     if (!permission) return;
@@ -104,7 +109,7 @@ export default function CameraScreen() {
       </TouchableOpacity>
       <CameraView key={cameraKey} ref={cameraRef} style={{ flex: 1 }} />
       <View className="absolute bottom-10 left-0 right-0 flex-row items-end px-8" style={{ width: '100%' }}>
-        
+
         <View style={{ flex: 1, alignItems: 'center' }}>
           <TouchableOpacity
             className="bg-white/60 p-5 rounded-full border-2 border-gray-400"
@@ -117,7 +122,7 @@ export default function CameraScreen() {
         </View>
         <View style={{ flex: 1 }} />
       </View>
-      
+
       {loading && (
         <View className="absolute inset-0 bg-black/60 items-center justify-center z-50">
           <ActivityIndicator size="large" color="#fff" />
