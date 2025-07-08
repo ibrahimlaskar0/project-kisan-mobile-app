@@ -1,6 +1,7 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import { useEffect, useState } from 'react';
 import { Text, View } from 'react-native';
+import { getWeatherAdvice, WeatherAdviceInput } from '../libs/advice';
 import { cacheWithExpiry, getCache } from '../libs/cache';
 import { getCurrentLocation, UserLocation } from '../libs/location';
 import { getWeatherData } from '../libs/weather';
@@ -62,6 +63,7 @@ export default function WeatherWidget() {
 
   // Extract data
   const { current, daily } = weather;
+  // Today = 0, Tomorrow = 1
   const todayMin = daily?.temperature2mMin?.[0];
   const todayMax = daily?.temperature2mMax?.[0];
   const windSpeed = current?.windSpeed10m;
@@ -124,6 +126,20 @@ export default function WeatherWidget() {
     textColorClass = 'text-white';
   }
 
+  // Prepare advice input
+  const adviceInput: WeatherAdviceInput = {
+    temperature: current.temperature2m,
+    minTemperature: todayMin,
+    maxTemperature: todayMax,
+    windSpeed: windSpeed,
+    rainProbability: tomorrowPrecipProb,
+    rainAmount: daily?.precipitationSum?.[0],
+    cloudCover: cloudCover,
+    humidity: current.relativeHumidity2m,
+    isDay: isDay,
+    time: current.time instanceof Date ? current.time : undefined,
+  };
+  const adviceList = getWeatherAdvice(adviceInput);
 
   return (
     <LinearGradient
@@ -133,11 +149,9 @@ export default function WeatherWidget() {
       style={{ borderRadius: 24, width: '100%', padding: 0, margin: 0 }}
     >
       <View className="items-center justify-center p-6 w-full">
-        {/* Place name at top */}
         <Text className={`text-lg font-bold mb-2 text-center ${textColorClass}`}>
           {[location.city, location.region, location.country].filter(Boolean).join(', ')}
         </Text>
-        {/* Weather icon and temperature */}
         <View className="flex-row items-center w-full justify-center mb-2">
           <View className="mr-4">
             {icon}
@@ -149,7 +163,6 @@ export default function WeatherWidget() {
             <Text className={`text-base mt-1 ${textColorClass}`}>Current</Text>
           </View>
         </View>
-        
         <View className="flex-row justify-between w-full mt-2 mb-2 px-4">
           <View className="items-center flex-1">
             <Text className={`text-base ${textColorClass}`}>Min</Text>
@@ -160,7 +173,6 @@ export default function WeatherWidget() {
             <Text className={`text-lg font-bold ${textColorClass}`}>{todayMax !== undefined ? Math.round(todayMax) : '--'}°C</Text>
           </View>
         </View>
-
         <View className="flex-row justify-between w-full mt-2 px-4">
           <View className="items-center flex-1">
             <Text className={`text-base ${textColorClass}`}>Wind</Text>
@@ -175,6 +187,22 @@ export default function WeatherWidget() {
             <Text className={`text-lg font-bold ${textColorClass}`}>{tomorrowPrecipProb !== undefined ? Math.round(tomorrowPrecipProb) : '--'}%</Text>
           </View>
         </View>
+        {adviceList.length > 0 && (
+          <View
+            className="w-full mt-4 rounded-xl p-4"
+            style={{
+              backgroundColor: 'rgba(96, 110, 130, 0.4)', // Tailwind gray-700 with 80% opacity
+              borderWidth: 3,
+              borderColor: 'rgba(157, 173, 196, 0.8)',
+              borderStyle: 'solid',
+            }}
+          >
+            <Text className={`text-xl font-extrabold mb-3 ${textColorClass}`}>Advice</Text>
+            {adviceList.map((advice, idx) => (
+              <Text key={idx} className={`text-lg mb-1 ${textColorClass}`}>• {advice}</Text>
+            ))}
+          </View>
+        )}
       </View>
     </LinearGradient>
   );
