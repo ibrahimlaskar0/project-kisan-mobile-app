@@ -5,3 +5,5 @@
 1. Frontend uses Expo for React Native, and NativeWind(TailWind for React Native) for styling
 
 2. Backend is build on flask framework, with help google gemini api to add AI capabilities
+
+3. The app can find diseases in plants from photos
