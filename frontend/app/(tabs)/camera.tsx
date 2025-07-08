@@ -94,6 +94,60 @@ export default function CameraScreen() {
     }
   };
 
+  const handlePickImage = async () => {
+    if (loading) return;
+    setLoading(true);
+    try {
+      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (status !== 'granted') {
+        Alert.alert('Permission required', 'Permission to access files is required!');
+        setLoading(false);
+        return;
+      }
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: false,
+        quality: 0.4,
+      });
+      if (!result.canceled && result.assets && result.assets.length > 0) {
+        setSelectedImage(result.assets[0].uri);
+        setModalVisible(true);
+      } else {
+        setLoading(false);
+      }
+    } catch (err) {
+      Alert.alert("Error", "Failed to pick photo.");
+      setLoading(false);
+    }
+  };
+
+  const handleConfirmUpload = async () => {
+    if (!selectedImage) return;
+    setModalVisible(false);
+    setTimeout(async () => {
+      setLoading(true);
+      await uploadPhoto(
+        selectedImage,
+        (message) => {
+          setSelectedImage(null);
+          router.replace({ pathname: "../response", params: { message } });
+        },
+        () => setLoading(false)
+      );
+      if (loading) setLoading(false);
+    }, 300);
+  };
+
+  const handleCancelModal = () => {
+    setModalVisible(false);
+    setSelectedImage(null);
+    setLoading(false);
+  };
+
+  if (!permission || !permission.granted) {
+    return <View className="flex-1 bg-black" />;
+  }
+
   if (!permission || !permission.granted) {
     return <View className="flex-1 bg-black" />;
   }
@@ -110,6 +164,16 @@ export default function CameraScreen() {
       <CameraView key={cameraKey} ref={cameraRef} style={{ flex: 1 }} />
       <View className="absolute bottom-10 left-0 right-0 flex-row items-end px-8" style={{ width: '100%' }}>
 
+        <View style={{ flex: 1, alignItems: 'flex-start' }}>
+          <TouchableOpacity
+            className="bg-white/60 px-6 py-3 rounded-lg border-2 border-gray-400"
+            onPress={handlePickImage}
+            disabled={loading}
+          >
+            <File size={28} color="#222" />
+          </TouchableOpacity>
+        </View>
+
         <View style={{ flex: 1, alignItems: 'center' }}>
           <TouchableOpacity
             className="bg-white/60 p-5 rounded-full border-2 border-gray-400"
@@ -122,6 +186,30 @@ export default function CameraScreen() {
         </View>
         <View style={{ flex: 1 }} />
       </View>
+
+      <Modal
+        visible={modalVisible}
+        transparent
+        animationType="fade"
+        onRequestClose={handleCancelModal}
+      >
+        <View className="flex-1 bg-black/70 items-center justify-center px-6">
+          <View className="bg-white rounded-2xl p-6 w-full max-w-md items-center">
+            {selectedImage && (
+              <Image source={{ uri: selectedImage }} style={{ width: 220, height: 220, borderRadius: 16, marginBottom: 20 }} resizeMode="cover" />
+            )}
+            <Text className="text-lg font-semibold mb-4 text-center">Send this image?</Text>
+            <View className="flex-row w-full justify-between mt-2">
+              <TouchableOpacity className="bg-gray-300 px-6 py-2 rounded-lg mr-2" onPress={handleCancelModal}>
+                <Text className="text-gray-800 font-semibold">Cancel</Text>
+              </TouchableOpacity>
+              <TouchableOpacity className="bg-green-600 px-6 py-2 rounded-lg ml-2" onPress={handleConfirmUpload}>
+                <Text className="text-white font-semibold">Send</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
 
       {loading && (
         <View className="absolute inset-0 bg-black/60 items-center justify-center z-50">
