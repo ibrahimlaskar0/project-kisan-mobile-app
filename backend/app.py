@@ -10,25 +10,34 @@ genai_client = genai.Client()
 MODEL="gemini-2.5-flash"
 
 
-# a test route I temporary created just to know the endpoint works, I will rmove it before hackathon submission
-@app.route("/")
-def index():
-    return "Hello world"
-
-# future route I will implement
+# camera functionality
 @app.route("/upload", method=["POST"])
-def upload():
-    # until my friends finish the frontend, I will just use a image for testing
-    # file = request.file['image']
+def upload_image():
+    if 'image' not in request.files:
+        return jsonify({"error": "No image file provided"}), 400
 
-    uploaded_image = genai_client.files.upload(file="uploads/download.jpeg")
+    file = request.files['image']
+    if file.filename == '':
+        return jsonify({"error": "No selected file"}), 400
 
-    response = genai_client.models.generate_content(
-        model=MODEL,
-        contents=[uploaded_image, "Analyze this plant or crop image and identify if there's any disease or pest on it, if there's any, provide remedies to cure it, make the response brief", "Return the result as plain text without formatting like **bold**, *, #", "If the the image does not contain any plant or crop, return 'No plant or crop found'"],
-    )
+    try:
+        filename = f"{datetime.now().strftime('%Y%m%d_%H%M%S')}_{file.filename}"
+        path = os.path.join(UPLOAD_FOLDER, filename)
+        file.save(path)
 
-    return jsonify({"response": response.text})
+        uploaded_image = genai_client.files.upload(file=path)
+
+        response = genai_client.models.generate_content(
+            model=MODEL,
+            contents=[uploaded_image, "Analyze this plant or crop image and identify if there's any disease or pest on it, if there's any, provide remedies to cure it, make the response brief", "Return the result as plain text without formatting like **bold**, *, #", "If the the image does not contain any plant or crop, return 'No plant or crop found'"],
+        )        
+
+        os.remove(path)
+
+        return jsonify({"message": response.text}), 200
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 if __name__ == "__main__":
     app.run(debug=True) 
