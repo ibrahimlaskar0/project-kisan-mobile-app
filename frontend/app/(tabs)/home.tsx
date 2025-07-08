@@ -13,18 +13,6 @@ export default function HomeScreen() {
 
   return (
     <SafeAreaView className="flex-1 bg-white px-4">
-      <View className="w-full flex-row justify-center items-center">
-      <View className="w-full flex-row justify-around items-center bg-transparent mt-5 mb-1">
-        <TouchableOpacity className="flex-grow bg-blue-500 p-4 rounded-l-xl flex-row justify-center items-center">
-          <WeatherIcon width={40} height={40}></WeatherIcon>
-          <Text className="text-center text-xl text-gray-100 font-bold mx-2">Weather</Text>
-        </TouchableOpacity>
-        <TouchableOpacity className="flex-grow bg-green-400 p-4 rounded-r-xl flex-row justify-center items-center">
-          <RateIcon width={40} height={40}></RateIcon>
-          <Text className="text-center text-xl text-green-950 font-bold mx-2">Rate</Text>
-        </TouchableOpacity>
-      </View>
-      </View>
       <ScrollView contentContainerStyle={{ alignItems: 'center', flexDirection: 'column', paddingVertical: 24 }}>
           <WeatherWidget/>
       </ScrollView>
