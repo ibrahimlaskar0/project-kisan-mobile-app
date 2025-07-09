@@ -25,6 +25,7 @@ def home():
 
 @app.route('/upload', methods=['POST'])
 def upload_image():
+    lang = request.args.get("lang")
     if 'image' not in request.files:
         return jsonify({"error": "No image file provided"}), 400
 
@@ -41,7 +42,7 @@ def upload_image():
 
         response = genai_client.models.generate_content(
             model=MODEL,
-            contents=[uploaded_image, "Analyze this plant or crop image and identify if there's any disease or pest on it, if there's any, provide remedies to cure it, make the response brief", "Return the result as plain text without formatting like **bold**, *, #", "If the the image does not contain any plant or crop, return 'No plant or crop found'"],
+            contents=[uploaded_image, "Analyze this plant or crop image and identify if there's any disease or pest on it, if there's any, provide remedies to cure it, make the response brief", "Return the result as plain text without formatting like **bold**, *, #", "The result should in " + lang, "If the the image does not contain any plant or crop, return 'No plant or crop found' or translated in " + lang],
         )        
 
         os.remove(path)
@@ -73,6 +74,7 @@ def chat():
 
     response = chat_session.send_message(message=message)
 
+    
 
     chat_session.record_history(message, [response], chat_history, True)
 
