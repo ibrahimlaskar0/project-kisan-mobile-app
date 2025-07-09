@@ -95,7 +95,7 @@ export default function ChatbotScreen() {
 
       setMessages((prev) => [...(prev.slice(0, prev.length - 1)), { from: "user", text: data.response }]); 
 
-      const chat_res = await fetch(CHAT_URL + "/chat", {
+      const chat_res = await fetch(CHAT_URL + "/chat?lang=" + (lang || "en-US"), {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -139,7 +139,7 @@ export default function ChatbotScreen() {
 
         setMessages((prev) => [...prev, { from: "assistant", text: "typing..."}])
 
-        const res = await fetch(CHAT_URL + "/chat", {
+        const res = await fetch(CHAT_URL + "/chat" + (lang || "en-US"), {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({

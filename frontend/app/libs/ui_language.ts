@@ -68,7 +68,7 @@ export const ui_language = {
         "hi-IN": "कल बारिश की संभावना",
     },
     advice: {
-        "en-US": "camera",
+        "en-US": "Advice",
         "hi-IN": "सलाह"
     },
     temp_very_cold: {
