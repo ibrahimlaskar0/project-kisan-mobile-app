@@ -5,8 +5,8 @@
 1. Made with React Native and NativeWind for cross platform support.
 
 2. Backend is build on flask framework, with help the of Google Gemini AI to add AI capabilities like:
-    - Disease detection from photo
-    - Chatbot to answer your query
+    - Detect plant and crop disease from photo
+    - Chatbot to answer your agriculture query
 
 3. Also packed capability to give weather reports and provide advices based on it.
 
