@@ -10,4 +10,4 @@
 
 3. Also packed capability to give weather reports and provide advices based on it.
 
-**Demo**: [https://drive.google.com/file/d/13WK9xJHCIo--8Ja9iXFMXcoKSNXO9a2X/view?usp=sharing](https://drive.google.com/file/d/13WK9xJHCIo--8Ja9iXFMXcoKSNXO9a2X/view?usp=sharing)
+**Check out the Demo [here](https://drive.google.com/file/d/13WK9xJHCIo--8Ja9iXFMXcoKSNXO9a2X/view?usp=sharing)**
