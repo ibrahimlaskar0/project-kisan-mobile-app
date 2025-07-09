@@ -15,7 +15,7 @@ export default function CameraScreen() {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [cameraKey, setCameraKey] = useState(0);
-  const IMG_UPLOAD_URL: string = "https://uganda-arnold-rail-smell.trycloudflare.com" //process.env.EXPO_PUBLIC_BACKEND_URL || "";
+  const IMG_UPLOAD_URL: string = process.env.EXPO_PUBLIC_BACKEND_URL || "";
 
   useFocusEffect(
     useCallback(() => {
