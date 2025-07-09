@@ -21,8 +21,6 @@ export default function ChatbotScreen() {
   const router = useRouter();
   const CHAT_URL = process.env.EXPO_PUBLIC_BACKEND_URL || ''
 
-  console.log(CHAT_URL)
-
   useEffect(() => {
     (async () => {
       setLang(await getAppLanguage())
@@ -74,8 +72,8 @@ export default function ChatbotScreen() {
       if (!uri) return;
 
       setRecording(null);
+      setMessages((prev) => [...prev, {from: "user", "text": "sending..."}])
 
-      // get language setting
       const lang = (await getAppLanguage()) || "en-US";
 
       const formData = new FormData();
@@ -95,7 +93,7 @@ export default function ChatbotScreen() {
 
       const data = await res.json();
 
-      setMessages((prev) => [...prev, { from: "user", text: data.response }]); 
+      setMessages((prev) => [...(prev.slice(0, prev.length - 1)), { from: "user", text: data.response }]); 
 
       const chat_res = await fetch(CHAT_URL + "/chat", {
           method: "POST",
@@ -110,7 +108,6 @@ export default function ChatbotScreen() {
 
           setMessages((prev) => [...prev, { from: "assistant", text: chat_data.response }]);
 
-          // Speech.speak(data.response, { language: lang || "en-US" })
       } else {
           setMessages((prev) => [...prev, { from: "assistant", text: "Unable to connect to the server" }]);
       }
@@ -138,7 +135,9 @@ export default function ChatbotScreen() {
 
     try {
       (async () => {
-        Speech?.stop?.()
+        // Speech?.stop?.()
+
+        setMessages((prev) => [...prev, { from: "assistant", text: "typing..."}])
 
         const res = await fetch(CHAT_URL + "/chat", {
           method: "POST",
@@ -151,11 +150,11 @@ export default function ChatbotScreen() {
         if (res.status === 200) {
           const data: any = await res.json()
 
-          setMessages((prev) => [...prev, { from: "assistant", text: data.response }]);
+          setMessages((prev) => [...(prev.slice(0, prev.length - 1)), { from: "assistant", text: data.response }]);
 
-          Speech.speak(data.response, { language: lang || "en-US" })
+          // Speech.speak(data.response, { language: lang || "en-US" })
         } else {
-          setMessages((prev) => [...prev, { from: "assistant", text: "Unable to connect to the server" }]);
+          setMessages((prev) => [...(prev.slice(0, prev.length - 1)), { from: "assistant", text: "Unable to connect to the server" }]);
         }
 
         scrollViewRef.current?.scrollToEnd({ animated: true });
@@ -240,7 +239,9 @@ export default function ChatbotScreen() {
             </View>
             :
             <View className="px-3 py-2 border-t-2 border-slate-100 bg-white flex-row items-center">
-              <TouchableOpacity className="ml-2 p-2 bg-[#7EAD0E] rounded-full" onPress={stopAndSendRecording}><Text>Stop Recording</Text></TouchableOpacity>
+              <TouchableOpacity className="ml-2 p-2 bg-blue-800 rounded-full w-full" onPress={stopAndSendRecording}>
+                <Text className="text-center text-2xl font-bold text-white">Stop Recording</Text>
+              </TouchableOpacity>
             </View>
         }
 
