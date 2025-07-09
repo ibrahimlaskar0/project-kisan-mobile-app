@@ -25,7 +25,7 @@ def home():
 
 @app.route('/upload', methods=['POST'])
 def upload_image():
-    lang = request.args.get("lang")
+    lang = request.args.get("lang", "en-US")
     if 'image' not in request.files:
         return jsonify({"error": "No image file provided"}), 400
 
@@ -82,6 +82,35 @@ def chat():
     chat_history.append({"assistant": response.text})
 
     return jsonify({"response": response.text}), 200
+
+
+@app.route("/voice_to_chat", methods=["POST"])
+def voice_to_chat():
+    lang = request.args.get("lang", "en-US")
+    audio = request.files.get("audio")
+
+    if not audio:
+        return jsonify({"error": "No audio provided"}), 400
+
+    file_path = f"uploads/{audio.filename}"
+    audio.save(file_path)
+
+    # Gemini transcription
+    try:
+        audio_file = genai_client.files.upload(file=file_path)
+
+        response = genai_client.models.generate_content(
+            model=MODEL, contents=[f"Give a transcription of this audio in {lang}", audio_file]
+        )
+
+        # chat_res = requests.post("http://localhost:5000/chat", json={
+        #     "message": response.text,
+        # })
+        # return jsonify(chat_res.json())
+        return jsonify({"response": response.text})
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)
