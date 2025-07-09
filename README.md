@@ -1,6 +1,6 @@
 # kisan-mobile-app
 
-*A Helpful Guide for Farmers, with support for multiple languages*
+## A Helpful Guide for Farmers, with support for multiple languages
 
 1. Made with React Native and NativeWind for cross platform support.
 
