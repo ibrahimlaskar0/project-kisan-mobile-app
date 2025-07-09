@@ -1,10 +1,10 @@
-import { Tabs, router } from "expo-router";
+import { Tabs, router, Link } from "expo-router";
 import { Bot, Camera, Home } from "lucide-react-native";
 import { useEffect, useState } from "react";
 import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import AsyncStorage from "@react-native-async-storage/async-storage"
-import { getAppLanguage, useLanguage } from "../libs/language"
+import { getAppLanguage, useLanguage, setAppLanguage} from "../libs/language"
 
 import RateWidget from "../components/rate_widget";
 import WeatherWidget from '../components/weather_widget';
@@ -22,7 +22,7 @@ export default function HomeScreen() {
   useEffect(() => {
     (async () => {
       setLang(await getAppLanguage())
-      console.log(lang)
+      // console.log(lang)
       // console.log(ui_text.weather[lang])
     })();
   }, [])
@@ -33,7 +33,9 @@ export default function HomeScreen() {
       <View>
 
         <TouchableOpacity onPress={() => router.replace("/settings")}>
-          <Text>Settings</Text>
+          <Link href="/language_settings">
+            <Text>Settings</Text>
+          </Link>
         </TouchableOpacity>
       </View>
       <View className="w-full flex-row justify-center items-center">

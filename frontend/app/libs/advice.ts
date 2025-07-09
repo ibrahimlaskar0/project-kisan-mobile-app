@@ -26,62 +26,56 @@ export function getWeatherAdvice(input: WeatherAdviceInput): string[] {
     time,
   } = input;
 
-  let lang: string | null
-
-  (async () => {
-    lang = await getAppLanguage()
-  })()
-
-  if (temperature < 10) advice.push("Too cold for most crops. Delay sowing.");
-  else if (temperature <= 20) advice.push("Cool weather — suitable for sowing wheat, peas.");
-  else if (temperature <= 30) advice.push("Good temperature for most crops.");
-  if (temperature > 35) advice.push("High heat — increase irrigation, avoid spraying during noon.");
-  if (temperature > 40) advice.push("Extreme heat — protect young crops, water early morning or evening.");
+  if (temperature < 10) advice.push("temp_very_cold");
+  else if (temperature <= 20) advice.push("temp_cool");
+  else if (temperature <= 30) advice.push("temp_optimal");
+  if (temperature > 35) advice.push("temp_hot");
+  if (temperature > 40) advice.push("temp_extreme");
 
   
   if (rainProbability !== undefined) {
-    if (rainProbability <= 20) advice.push("No rain expected — good day for pesticide or fertilizer spraying.");
-    else if (rainProbability <= 50) advice.push("Slight rain chance — consider watering today.");
-    else if (rainProbability <= 80) advice.push("Rain likely — postpone field spraying or harvesting.");
-    else if (rainProbability > 80) advice.push("Heavy rain expected — protect harvested crops, delay irrigation.");
+    if (rainProbability <= 20) advice.push("rain_none");
+    else if (rainProbability <= 50) advice.push("rain_light");
+    else if (rainProbability <= 80) advice.push("rain_likely");
+    else if (rainProbability > 80) advice.push("rain_heavy");
   }
   if (rainAmount !== undefined) {
-    if (rainAmount >= 5 && rainAmount <= 15) advice.push("Moderate rainfall — reduce irrigation schedule.");
-    if (rainAmount > 20) advice.push("Heavy rain — check for waterlogging in fields.");
+    if (rainAmount >= 5 && rainAmount <= 15) advice.push("rain_mm_moderate");
+    if (rainAmount > 20) advice.push("rain_mmm_heavy");
   }
 
 
-  if (windSpeed < 10) advice.push("Calm wind — suitable for spraying.");
-  else if (windSpeed <= 25) advice.push("Moderate wind — be cautious with spraying.");
-  if (windSpeed > 25) advice.push("Strong wind — avoid spraying and field work.");
+  if (windSpeed < 10) advice.push("wind_calm");
+  else if (windSpeed <= 25) advice.push("wind_moderate");
+  if (windSpeed > 25) advice.push("wind_strong");
 
 
-  if (cloudCover < 20) advice.push("Sunny day — good for drying crops and spraying.");
-  else if (cloudCover < 50) advice.push("Partly cloudy — good light for growth.");
-  else if (cloudCover < 85) advice.push("Mostly cloudy — reduce evaporation, monitor fungus.");
-  if (cloudCover > 85) advice.push("Overcast — may increase pest/disease risk.");
+  if (cloudCover < 20) advice.push("cloud_clear");
+  else if (cloudCover < 50) advice.push("cloud_partly");
+  else if (cloudCover < 85) advice.push("cloud_mostly");
+  if (cloudCover > 85) advice.push("cloud_overcast");
 
 
   if (humidity !== undefined) {
-    if (humidity < 30) advice.push("Dry conditions — increase watering, risk of dehydration.");
-    else if (humidity <= 60) advice.push("Ideal humidity for most crops.");
-    if (humidity > 70) advice.push("High humidity — monitor for fungal disease.");
-    if (humidity > 85) advice.push("Very high humidity — avoid spraying, risk of leaf burn and fungus.");
+    if (humidity < 30) advice.push("humidity_dry");
+    else if (humidity <= 60) advice.push("humidity_ideal");
+    if (humidity > 70) advice.push("humidity_high");
+    if (humidity > 85) advice.push("Vhumidity_very_high");
   }
 
 
   if (isDay !== undefined && time instanceof Date) {
     const hour = time.getHours();
-    if (hour < 10 && isDay && cloudCover < 20) advice.push("Best time to water crops.");
-    if (hour >= 12 && hour <= 15 && isDay && temperature > 30) advice.push("Avoid spraying or watering — high evaporation.");
-    if (hour >= 17 && !isDay) advice.push("Good time for irrigation and field activity.");
+    if (hour < 10 && isDay && cloudCover < 20) advice.push("time_morning");
+    if (hour >= 12 && hour <= 15 && isDay && temperature > 30) advice.push("forecast_rain_wind");
+    if (hour >= 17 && !isDay) advice.push("time_evening");
   }
   
 
-  if (rainProbability > 50 && windSpeed > 20) advice.push("Avoid pesticide spraying — may get washed off.");
-  if (rainProbability > 60) advice.push("Consider early irrigation today — rain expected tomorrow.");
-  if (rainProbability < 20 && cloudCover < 20) advice.push("Ideal time for planting, spraying, or harvesting.");
-  if (rainProbability > 80 && rainAmount !== undefined && rainAmount > 20) advice.push("Heavy rain warning — cover stored grains and prepare for water drainage.");
+  if (rainProbability > 50 && windSpeed > 20) advice.push("forecast_rain_wind");
+  if (rainProbability > 60) advice.push("forecast_rain_tomorrow");
+  if (rainProbability < 20 && cloudCover < 20) advice.push("forecast_clear_days");
+  if (rainProbability > 80 && rainAmount !== undefined && rainAmount > 20) advice.push("forecast_heavy_rain");
 
   return advice;
 }

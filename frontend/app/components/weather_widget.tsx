@@ -5,6 +5,7 @@ import { getWeatherAdvice, WeatherAdviceInput } from '../libs/advice';
 import { cacheWithExpiry, getCache } from '../libs/cache';
 import { getCurrentLocation, UserLocation } from '../libs/location';
 import { getWeatherData } from '../libs/weather';
+import { getAppLanguage, useLanguage } from '../libs/language';
 
 import CloudyIcon from '../../assets/weather_icons/static/cloudy.svg';
 import DayIcon from '../../assets/weather_icons/static/day.svg';
@@ -18,9 +19,12 @@ export default function WeatherWidget() {
   const [weather, setWeather] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [lang, setLang] = useState<string|null>(null)
 
   useEffect(() => {
     async function fetchData() {
+      setLang(await getAppLanguage())
+
       setLoading(true);
       setError(null);
       try {
@@ -72,10 +76,10 @@ export default function WeatherWidget() {
   const isDay = current?.isDay;
   const weatherCode = current?.weatherCode;
 
-  let sky = 'Clear';
-  if (cloudCover >= 85) sky = 'Overcast';
-  else if (cloudCover >= 50) sky = 'Mostly Cloudy';
-  else if (cloudCover >= 20) sky = 'Partly Cloudy';
+  let sky = 'sky_clear';
+  if (cloudCover >= 85) sky = 'sky_overcast';
+  else if (cloudCover >= 50) sky = 'sky_mostly_cloudy';
+  else if (cloudCover >= 20) sky = 'sky_partly_cloudy';
 
   let gradientColors = ['#3B7AED', '#84ABF0']; // default sunny day
   let icon = <DayIcon width={120} height={120} />;
@@ -160,30 +164,30 @@ export default function WeatherWidget() {
             <Text className={`text-4xl font-bold ${textColorClass}`}>
               {Math.round(current.temperature2m)}°C
             </Text>
-            <Text className={`text-base mt-1 ${textColorClass}`}>Current</Text>
+            <Text className={`text-base mt-1 ${textColorClass}`}>{useLanguage(lang, "temp_current")}</Text>
           </View>
         </View>
         <View className="flex-row justify-between w-full mt-2 mb-2 px-4">
           <View className="items-center flex-1">
-            <Text className={`text-base ${textColorClass}`}>Min</Text>
+            <Text className={`text-base ${textColorClass}`}>{useLanguage(lang, "temp_min")}</Text>
             <Text className={`text-lg font-bold ${textColorClass}`}>{todayMin !== undefined ? Math.round(todayMin) : '--'}°C</Text>
           </View>
           <View className="items-center flex-1">
-            <Text className={`text-base ${textColorClass}`}>Max</Text>
+            <Text className={`text-base ${textColorClass}`}>{useLanguage(lang, "temp_max")}</Text>
             <Text className={`text-lg font-bold ${textColorClass}`}>{todayMax !== undefined ? Math.round(todayMax) : '--'}°C</Text>
           </View>
         </View>
         <View className="flex-row justify-between w-full mt-2 px-4">
           <View className="items-center flex-1">
-            <Text className={`text-base ${textColorClass}`}>Wind</Text>
+            <Text className={`text-base ${textColorClass}`}>{useLanguage(lang, "wind_speed")}</Text>
             <Text className={`text-lg font-bold ${textColorClass}`}>{windSpeed !== undefined ? Math.round(windSpeed) : '--'} km/h</Text>
           </View>
           <View className="items-center flex-1">
-            <Text className={`text-base ${textColorClass}`}>Sky</Text>
-            <Text className={`text-lg font-bold ${textColorClass}`}>{sky}</Text>
+            <Text className={`text-base ${textColorClass}`}>{useLanguage(lang, "sky")}</Text>
+            <Text className={`text-lg font-bold ${textColorClass}`}>{useLanguage(lang, sky)}</Text>
           </View>
           <View className="items-center flex-1">
-            <Text className={`text-base ${textColorClass}`}>Rain Tomorrow</Text>
+            <Text className={`text-base ${textColorClass}`}>{useLanguage(lang, "rain_tomorrow")}</Text>
             <Text className={`text-lg font-bold ${textColorClass}`}>{tomorrowPrecipProb !== undefined ? Math.round(tomorrowPrecipProb) : '--'}%</Text>
           </View>
         </View>
@@ -197,9 +201,9 @@ export default function WeatherWidget() {
               borderStyle: 'solid',
             }}
           >
-            <Text className={`text-xl font-extrabold mb-3 ${textColorClass}`}>Advice</Text>
+            <Text className={`text-xl font-extrabold mb-3 ${textColorClass}`}>{useLanguage(lang, "advice")}</Text>
             {adviceList.map((advice, idx) => (
-              <Text key={idx} className={`text-lg mb-1 ${textColorClass}`}>• {advice}</Text>
+              <Text key={idx} className={`text-lg mb-1 ${textColorClass}`}>• {lang ? useLanguage(lang, advice) : useLanguage("en-US", advice)}</Text>
             ))}
           </View>
         )}

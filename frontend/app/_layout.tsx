@@ -3,7 +3,6 @@ import { useEffect } from "react"
 import "../global.css";
 
 import { getAppLanguage } from "./libs/language"
-import { View } from "lucide-react-native";
 
 export default function RootLayout() {
 
@@ -25,8 +24,10 @@ export default function RootLayout() {
   
   return (
     <Stack>
-      <Stack.Screen name="(tabs)" options={{headerShown: false}} />
       <Stack.Screen name="language_settings" options={{headerShown: false}} />
+      <Stack.Screen name="(tabs)" options={{headerShown: false}} />
+      <Stack.Screen name="response" options={{headerShown: false}} />
+      <Stack.Screen name="settings" options={{ title: "Settings"}} />
     </Stack>
   );
 }

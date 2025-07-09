@@ -1,9 +1,10 @@
 import { useRouter } from "expo-router";
 import Speech from "expo-speech";
 import { ArrowLeft, ArrowUp, Mic } from "lucide-react-native";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { KeyboardAvoidingView, Platform, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { getAppLanguage, useLanguage } from "../libs/language"
 
 interface Message {
   from: string;
@@ -13,25 +14,34 @@ interface Message {
 export default function ChatbotScreen() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
+  const [lang, setLang] = useState<string | null>("")
   const scrollViewRef = useRef<ScrollView>(null);
   const router = useRouter();
   const CHAT_URL = process.env.EXPO_PUBLIC_BACKEND_URL || ''
+
+  useEffect(() => {
+    (async () => {
+      setLang(await getAppLanguage())
+      console.log(lang)
+    })()
+  }, [])
 
   const handleSend = () => {
     if (!input.trim()) return;
     const userMsg: Message = { from: "user", text: input };
     setMessages((prev) => [...prev, userMsg]);
     setInput("");
-    
+
     if (!CHAT_URL) {
       const error_message = { from: "assistant", text: "Unable to connnect, please try again later." }
       setMessages((prev) => [...prev, error_message]);
       return
     }
-    
+
     try {
       (async () => {
         // await Speech.stop()
+
         const res = await fetch(CHAT_URL + "/chat", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -66,7 +76,7 @@ export default function ChatbotScreen() {
         <TouchableOpacity onPress={handleBack} className="mr-3 p-1">
           <ArrowLeft size={28} color="#222" />
         </TouchableOpacity>
-        <Text className="text-2xl font-bold text-gray-900 text-left">Chatbot</Text>
+        <Text className="text-2xl font-bold text-gray-900 text-left">{useLanguage(lang, "chatbot")}</Text>
       </View>
 
       <KeyboardAvoidingView

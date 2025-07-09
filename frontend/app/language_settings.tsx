@@ -26,6 +26,9 @@ export default function LanguageSelection() {
 
     return (
         <SafeAreaView className="flex-1 justify-center items-center p-8">
+            <View>
+                <Text>Language</Text>
+            </View>
             <ScrollView className="flex-col">
                 {languages.map(lang => (
                     <TouchableOpacity key={lang.key} 

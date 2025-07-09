@@ -3,7 +3,9 @@ import { ui_language } from "./ui_language"
 
 type languagecode = "en-US" | "hi-IN";
 
-export function useLanguage(lang: string, key: string = "en-US") {
+export function useLanguage(lang: string | null, key: string = "en-US"): string {
+    if(!lang)
+        lang = "en-US"
     return (ui_language as any)[key][lang]
 }
 

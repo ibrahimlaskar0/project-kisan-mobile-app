@@ -15,9 +15,53 @@ export const ui_language = {
         "en-US": "camera",
         "hi-IN": "कैमरा"
     },
-    advice_weather_heading: {
-        "en-US": "🌦️ Weather-Based Farming Advice — Full List",
-        "hi-IN": "🌦️ मौसम आधारित कृषि सलाह — पूरी सूची",
+    select_language: {
+        "en-US": "select language",
+        "hi-IN": "भाषा चुने"
+    },
+    temp_min: {
+        "en-US": "Min",
+        "hi-IN": "न्यूनतम",
+    },
+    temp_max: {
+        "en-US": "Max",
+        "hi-IN": "अधिकतम",
+    },
+    temp_current: {
+        "en-US": "Current Temperature",
+        "hi-IN": "वर्तमान तापमान",
+    },
+    wind_speed: {
+        "en-US": "Wind Speed",
+        "hi-IN": "हवा की गति"
+    },
+    sky: {
+        "en-US": "Sky",
+        "hi-IN": "आसमान",
+    },
+    sky_clear: {
+        "en-US": "Clear",
+        "hi-IN": "साफ़",
+    },
+    sky_partly_cloudy: {
+        "en-US": "Partly Cloudy",
+        "hi-IN": "आंशिक रूप से बादल",
+    },
+    sky_mostly_cloudy: {
+        "en-US": "Mostly Cloudy",
+        "hi-IN": "अधिकतर बादल",
+    },
+    sky_overcast: {
+        "en-US": "Overcast",
+        "hi-IN": "पूरा बादल",
+    },
+    rain_tomorrow: {
+        "en-US": "Rain Tomorrow",
+        "hi-IN": "कल बारिश की संभावना",
+    },
+    advice: {
+        "en-US": "camera",
+        "hi-IN": "सलाह"
     },
     temp_very_cold: {
         "en-US": "Too cold for most crops. Delay sowing.",
