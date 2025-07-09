@@ -3,6 +3,7 @@ import * as Speech from "expo-speech";
 import { ArrowLeft } from "lucide-react-native";
 import { useEffect, useRef } from "react";
 import { ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { getAppLanguage, useLanguage } from "./libs/language"
 
 export default function ResponseScreen() {
   const router = useRouter();
@@ -11,12 +12,15 @@ export default function ResponseScreen() {
 
   useEffect(() => {
     hasSpoken.current = false;
-    if (typeof message === 'string' && message.trim()) {
-      Speech.stop();
-      Speech.speak(message, {
-        onDone: () => { hasSpoken.current = true; },
-      });
-    }
+    (async () => {
+      if (typeof message === 'string' && message.trim()) {
+        Speech.stop();
+        Speech.speak(message, {
+          onDone: () => { hasSpoken.current = true; },
+          language: await getAppLanguage() || "en-US"
+        });
+      }
+    })()
     return () => {
       Speech.stop();
     };

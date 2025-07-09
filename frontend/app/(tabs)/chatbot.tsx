@@ -23,7 +23,10 @@ export default function ChatbotScreen() {
     (async () => {
       setLang(await getAppLanguage())
       console.log(lang)
-    })()
+    })();
+    return () => {
+      Speech.stop()
+    }
   }, [])
 
   const handleSend = () => {
@@ -40,7 +43,7 @@ export default function ChatbotScreen() {
 
     try {
       (async () => {
-        await Speech.stop()
+        Speech.stop()
 
         const res = await fetch(CHAT_URL + "/chat", {
           method: "POST",

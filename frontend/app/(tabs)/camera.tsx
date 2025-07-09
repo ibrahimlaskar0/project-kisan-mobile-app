@@ -6,6 +6,7 @@ import { ArrowLeft, Camera as CameraIcon, File } from "lucide-react-native";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ActivityIndicator, Alert, Image, Modal, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { getAppLanguage, useLanguage } from "../libs/language"
 
 export default function CameraScreen() {
   const [permission, requestPermission] = useCameraPermissions();
@@ -52,11 +53,13 @@ export default function CameraScreen() {
         name: 'photo.jpg',
         type: 'image/jpeg',
       } as any);
-      const response = await fetch(IMG_UPLOAD_URL + "/upload", {
+      const lang = await getAppLanguage()
+      const response = await fetch(IMG_UPLOAD_URL + "/upload?lang=" + lang, {
         method: "POST",
         headers: { 'Content-Type': 'multipart/form-data' },
         body: formData,
       });
+      console.log(lang)
       const data = await response.json();
       if (response.ok && data && data.message) {
         onSuccess(data.message);
@@ -67,7 +70,6 @@ export default function CameraScreen() {
     } catch (err) {
       Alert.alert("Error", "Failed to upload photo.");
       if (onError) onError();
-      console.log(err);
     }
   };
 
