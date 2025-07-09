@@ -1,11 +1,13 @@
 # kisan-mobile-app
 
-*A Helpful Guide for Farmers, which support for multiple languages*
+*A Helpful Guide for Farmers, with support for multiple languages*
 
-1. Frontend uses Expo for React Native, and NativeWind(TailWind for React Native) for styling
+1. Made with React Native and NativeWind for cross platform support.
 
-2. Backend is build on flask framework, with help google gemini api to add AI capabilities
+2. Backend is build on flask framework, with help the of Google Gemini AI to add AI capabilities like:
+    - Disease detection from photo
+    - Chatbot to answer your query
 
-3. The app can find diseases in plants from photos
+3. Also packed capability to give weather reports and provide advices based on it.
 
-Progress: Working on Multilanguage support
+**Demo**: [https://drive.google.com/file/d/13WK9xJHCIo--8Ja9iXFMXcoKSNXO9a2X/view?usp=sharing](https://drive.google.com/file/d/13WK9xJHCIo--8Ja9iXFMXcoKSNXO9a2X/view?usp=sharing)
