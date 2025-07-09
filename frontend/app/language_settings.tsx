@@ -1,7 +1,9 @@
-import { View, TouchableOpacity, Text, ScrollView, SafeAreaView } from "react-native"
-import { useState } from "react"
+import { View, TouchableOpacity, Text, SafeAreaView, TouchableWithoutFeedback } from "react-native"
+import { useEffect, useState } from "react"
 import { Link, router } from "expo-router"
 import { speak } from "expo-speech"
+import { ArrowLeft } from "lucide-react-native"
+import { getAppLanguage, useLanguage } from "./libs/language"
 import { setAppLanguage } from "./libs/language"
 
 const languages = [
@@ -12,6 +14,13 @@ const languages = [
 export default function LanguageSelection() {
     const [selected, setSelected] = useState(false)
     const [selectedLanguage, setSelectedLanguage] = useState<any>(null)
+    const [interfaceLang, setInterfaceLang] = useState<string|null>("")
+
+    useEffect(() => {
+        (async() => {
+            setInterfaceLang(await getAppLanguage())
+        })()
+    }, [])
 
     const handleSpeak = (language: any) => {
 
@@ -25,27 +34,31 @@ export default function LanguageSelection() {
     
 
     return (
-        <SafeAreaView className="flex-1 justify-center items-center p-8">
-            <View>
-                <Text>Language</Text>
+        <View className="flex-col justify-between h-full bg-white py-8">
+            <View className="w-full py-4 px-6 pt-8 bg-white border-b border-gray-200 flex-row items-center">
+                <TouchableWithoutFeedback onPress={() => router.back()}>
+                    <ArrowLeft color="#000" size={30}/>
+                </TouchableWithoutFeedback>
+                <Text className="text-center text-2xl font-bold mx-3">{useLanguage(interfaceLang, "select_language")}</Text>
             </View>
-            <ScrollView className="flex-col">
+            <View className="flex px-10">
                 {languages.map(lang => (
                     <TouchableOpacity key={lang.key} 
-                    className="w-full p-4 rounded-sm bg-blue-500 m-2 flex-row justify-center items-center" 
+                    className="p-4 rounded-sm bg-blue-500 m-2 flex-row justify-center items-center" 
                     onPress={() => handleSpeak(lang)}>
                         <Text className="font-bold text-2xl">{lang.name}</Text>
                     </TouchableOpacity>
                 ))}
-            </ScrollView>
+            </View>
             {
-                selected &&
+                selected ?
                 <View className="w-full">
                     <TouchableOpacity className="bg-blue-400 rounded w-full" onPress={() => router.replace("/home")}>
-                            <Text className=" text-blue-950 p-6 text-2xl font-bold text-center">Next</Text>
+                            <Text className=" text-blue-950 p-6 text-2xl font-bold text-center">{useLanguage(interfaceLang, "next")}</Text>
                     </TouchableOpacity>
                 </View>
+                : <View><Text className="p-6 text-white/0"></Text></View>
             }
-        </SafeAreaView>
+        </View>
     )
 }

@@ -40,7 +40,7 @@ export default function ChatbotScreen() {
 
     try {
       (async () => {
-        // await Speech.stop()
+        await Speech.stop()
 
         const res = await fetch(CHAT_URL + "/chat", {
           method: "POST",
@@ -49,11 +49,18 @@ export default function ChatbotScreen() {
             message: userMsg.text
           }),
         })
-        const data: any = await res.json()
 
-        Speech.speak(data.response)
+        if(res.status === 200){
+          const data: any = await res.json()
+  
+            console.log(data)
+            setMessages((prev) => [...prev, { from: "assistant", text: data.response }]);
 
-        setMessages((prev) => [...prev, { from: "assistant", text: data.response }]);
+            Speech.speak(data.response)
+        } else{
+          setMessages((prev) => [...prev, { from: "assistant", text: "Unable to connect to the server" }]);
+        }
+
         scrollViewRef.current?.scrollToEnd({ animated: true });
       })()
 
@@ -122,7 +129,7 @@ export default function ChatbotScreen() {
           <TextInput
             className="flex-1 text-base px-3 py-2 bg-gray-100 rounded-xl"
             style={{ minHeight: 40, maxHeight: 100 }}
-            placeholder="Type your message..."
+            placeholder={useLanguage(lang, "type_your_message")}
             value={input}
             onChangeText={setInput}
             multiline

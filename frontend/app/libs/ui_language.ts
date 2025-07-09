@@ -11,6 +11,10 @@ export const ui_language = {
         "en-US": "chatbot",
         "hi-IN": "चैटबॉट"
     },
+    type_your_message: {
+        "en-US": "type your message",
+        "hi-IN": "मैसेज टाइप करें"
+    },
     camera: {
         "en-US": "camera",
         "hi-IN": "कैमरा"
@@ -18,6 +22,10 @@ export const ui_language = {
     select_language: {
         "en-US": "select language",
         "hi-IN": "भाषा चुने"
+    },
+    next: {
+        "en-US": "Next",
+        "hi-IN": "नेक्स्ट"
     },
     temp_min: {
         "en-US": "Min",
