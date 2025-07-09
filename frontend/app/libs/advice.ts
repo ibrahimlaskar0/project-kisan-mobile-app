@@ -1,3 +1,5 @@
+import { getAppLanguage, useLanguage} from "./language"
+
 interface WeatherAdviceInput {
   temperature: number; // C
   minTemperature?: number;
@@ -24,6 +26,11 @@ export function getWeatherAdvice(input: WeatherAdviceInput): string[] {
     time,
   } = input;
 
+  let lang: string | null
+
+  (async () => {
+    lang = await getAppLanguage()
+  })()
 
   if (temperature < 10) advice.push("Too cold for most crops. Delay sowing.");
   else if (temperature <= 20) advice.push("Cool weather — suitable for sowing wheat, peas.");

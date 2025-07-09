@@ -30,10 +30,8 @@ export default function ChatbotScreen() {
     }
     
     try {
-      setMessages((prev) => [...prev, { from: "loader", text: "typing..."}]);
-      
       (async () => {
-        await Speech.stop()
+        // await Speech.stop()
         const res = await fetch(CHAT_URL + "/chat", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -45,7 +43,7 @@ export default function ChatbotScreen() {
 
         Speech.speak(data.response)
 
-        setMessages((prev) => [...(prev.slice(0, prev.length - 1)), { from: "assistant", text: data.response }]);
+        setMessages((prev) => [...prev, { from: "assistant", text: data.response }]);
         scrollViewRef.current?.scrollToEnd({ animated: true });
       })()
 

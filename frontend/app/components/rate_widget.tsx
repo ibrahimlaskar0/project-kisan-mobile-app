@@ -5,16 +5,16 @@ import { getCurrentLocation } from "../libs/location";
 
 export default function RateWidget() {
 
-    useEffect(() => {
-        (async () => {
-            const location = (await getCurrentLocation())
-            const state = location?.region || ""
-            const district = location?.city || ""
-            const data = await fetchCropPrices({commodity: "potato", state, district})
+    // useEffect(() => {
+    //     (async () => {
+    //         const location = (await getCurrentLocation())
+    //         const state = location?.region || ""
+    //         const district = location?.city || ""
+    //         const data = await fetchCropPrices({commodity: "potato", state, district})
 
-            console.log(data)
-        })()
-    }, [])
+    //         console.log(data)
+    //     })()
+    // }, [])
 
     return (
         <View>

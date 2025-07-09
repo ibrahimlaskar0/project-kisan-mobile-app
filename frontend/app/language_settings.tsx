@@ -1,7 +1,8 @@
-import { View, TouchableOpacity, Text, ScrollView } from "react-native"
+import { View, TouchableOpacity, Text, ScrollView, SafeAreaView } from "react-native"
 import { useState } from "react"
 import { Link, router } from "expo-router"
 import { speak } from "expo-speech"
+import { setAppLanguage } from "./libs/language"
 
 const languages = [
     {name: "English", key: "en-US"},
@@ -13,14 +14,18 @@ export default function LanguageSelection() {
     const [selectedLanguage, setSelectedLanguage] = useState<any>(null)
 
     const handleSpeak = (language: any) => {
-        setSelectedLanguage(language)
-        setSelected(true)
-        speak(language.name, { language: language.key })
+
+        setSelectedLanguage(language);
+        setSelected(true);
+        speak(language.name, { language: language.key });
+        (async () => {
+            await setAppLanguage(language.key)
+        })()
     }
     
 
     return (
-        <View className="flex-1 justify-center items-center p-8">
+        <SafeAreaView className="flex-1 justify-center items-center p-8">
             <ScrollView className="flex-col">
                 {languages.map(lang => (
                     <TouchableOpacity key={lang.key} 
@@ -33,11 +38,11 @@ export default function LanguageSelection() {
             {
                 selected &&
                 <View className="w-full">
-                    <TouchableOpacity className="bg-blue-400 rounded w-full" onPress={() => router.replace({pathname: "/home", params: { language: selectedLanguage }})}>
+                    <TouchableOpacity className="bg-blue-400 rounded w-full" onPress={() => router.replace("/home")}>
                             <Text className=" text-blue-950 p-6 text-2xl font-bold text-center">Next</Text>
                     </TouchableOpacity>
                 </View>
             }
-        </View>
+        </SafeAreaView>
     )
 }
