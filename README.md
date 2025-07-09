@@ -7,3 +7,5 @@
 2. Backend is build on flask framework, with help google gemini api to add AI capabilities
 
 3. The app can find diseases in plants from photos
+
+Progress: Working on Multilanguage support
