@@ -70,12 +70,14 @@ def chat():
 
     if not message:
         return jsonify({ "message": "error" }), 400
+
     response = chat_session.send_message(message=message)
 
-    chat_history.append({"user": message})
-    chat_history.append({"assistant": response})
 
     chat_session.record_history(message, [response], chat_history, True)
+
+    chat_history.append({"user": message})
+    chat_history.append({"assistant": response.text})
 
     return jsonify({"response": response.text}), 200
 
