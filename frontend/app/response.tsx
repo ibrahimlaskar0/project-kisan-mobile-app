@@ -4,6 +4,7 @@ import { ArrowLeft } from "lucide-react-native";
 import { useEffect, useRef } from "react";
 import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { getAppLanguage, useLanguage } from "./libs/language"
+import { Volume2 } from "lucide-react-native"
 
 export default function ResponseScreen() {
   const router = useRouter();
@@ -41,7 +42,7 @@ export default function ResponseScreen() {
   return (
     <View className="flex-1 bg-white px-4 justify-center items-center">
       <TouchableOpacity onPress={handleBack} style={{ marginRight: 12, padding: 4 }} className="absolute top-12 left-4 px-6 py-3 z-10">
-          <ArrowLeft size={28} color="#222" />
+        <ArrowLeft size={28} color="#222" />
       </TouchableOpacity>
       <View className="bg-green-50 rounded-2xl shadow-md px-6 py-6 w-full max-w-2xl items-center justify-center min-h-[200px] relative">
         <ScrollView
@@ -58,7 +59,7 @@ export default function ResponseScreen() {
           style={{ marginBottom: 8 }}
           onPress={handleRepeat}
         >
-          <Text className="text-white text-base font-semibold">Repeat</Text>
+          <Volume2 size={30} color="#fff" />
         </TouchableOpacity>
       </View>
     </View>
